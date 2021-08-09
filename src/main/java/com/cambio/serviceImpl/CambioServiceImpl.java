@@ -1,6 +1,7 @@
 package com.cambio.serviceImpl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +27,16 @@ public class CambioServiceImpl implements CambioService {
 		Double monetoCambio = 0.0;
 
 		CambioResponse cambio = new CambioResponse();
-		TipoCambio monedaOrigen = tipoCambioDao.findByid(request.getMonedaOrigen());
-		TipoCambio monedaDestino = tipoCambioDao.findByid(request.getMonedaDestino());
+		Optional<TipoCambio> monedaOrigen = tipoCambioDao.findById(request.getMonedaOrigen());
+		Optional<TipoCambio> monedaDestino = tipoCambioDao.findById(request.getMonedaDestino());
 
-		monetoCambio = request.getMonto() / monedaOrigen.getCambio() * monedaDestino.getCambio();
+		monetoCambio = request.getMonto() / monedaOrigen.get().getCambio() * monedaDestino.get().getCambio();
 
 		cambio.setMonto(request.getMonto());
 		cambio.setMontoCambio(monetoCambio);
-		cambio.setMonedaOrigen(monedaOrigen.getMoneda());
-		cambio.setMonedaDestino(monedaDestino.getMoneda());
-		cambio.setTipoCambio(monedaOrigen.getTipo() + "/" + monedaDestino.getTipo());
+		cambio.setMonedaOrigen(monedaOrigen.get().getMoneda());
+		cambio.setMonedaDestino(monedaDestino.get().getMoneda());
+		cambio.setTipoCambio(monedaOrigen.get().getTipo() + "/" + monedaDestino.get().getTipo());
 
 		return cambio;
 	}
